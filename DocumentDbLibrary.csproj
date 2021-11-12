@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+	  <ImplicitUsings>true</ImplicitUsings>
+	  <Version>1.0.1</Version>
+  </PropertyGroup>
+  
+  <ItemGroup>
+	  <PackageReference Include="CommonBasicLibraries" Version="4.0.1" />
+	  <PackageReference Include="DapperHelpersLibrary" Version="4.0.1" />
+	  
+  </ItemGroup>
+
+</Project>
