@@ -1,5 +1,5 @@
 ﻿global using CommonBasicLibraries.CollectionClasses;
-global using jj = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers.NewtonJsonStrings;
+global using jj = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers.SystemTextJsonStrings;
 global using CommonBasicLibraries.BasicDataSettingsAndProcesses;
 global using CommonBasicLibraries.DatabaseHelpers.ConditionClasses;
 global using CommonBasicLibraries.DatabaseHelpers.Extensions;
