@@ -12,7 +12,7 @@ internal class DocumentContext
         DocumentTable? document = null;
         await Helps.DoWorkAsync(async cons =>
         {
-            BasicList<ICondition> conditions = ss.StartWithOneCondition(nameof(DocumentTable.DatabaseName), databaseName)
+            BasicList<ICondition> conditions = ss1.StartWithOneCondition(nameof(DocumentTable.DatabaseName), databaseName)
             .AppendCondition(nameof(DocumentTable.CollectionName), collectionName);
             var list = await cons.GetAsync<DocumentTable>(conditions, Helps.GetConnector);
             if (list.Count > 1)
@@ -34,7 +34,7 @@ internal class DocumentContext
     {
         await Helps.DoWorkAsync(async cons =>
         {
-            BasicList<ICondition> conditions = ss.StartWithOneCondition(nameof(DocumentTable.DatabaseName), databaseName)
+            BasicList<ICondition> conditions = ss1.StartWithOneCondition(nameof(DocumentTable.DatabaseName), databaseName)
             .AppendCondition(nameof(DocumentTable.CollectionName), collectionName);
             var list = await cons.GetAsync<DocumentTable>(conditions, Helps.GetConnector);
             if (list.Count > 1)
