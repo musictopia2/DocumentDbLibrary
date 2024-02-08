@@ -10,3 +10,4 @@ global using DapperHelpersLibrary.Extensions;
 global using static DapperHelpersLibrary.SQLHelpers.StatementFactoryUpdates;
 global using ss1 = CommonBasicLibraries.DatabaseHelpers.MiscClasses.StaticHelpers;
 global using CommonBasicLibraries.DatabaseHelpers.EntityInterfaces;
+global using DapperHelpersLibrary.ConnectionHelpers;

@@ -1,13 +1,9 @@
 ﻿namespace DocumentDbLibrary;
-internal class DocumentContext
+internal class DocumentContext(string databaseName, string collectionName, string proposedPath)
 {
-    public readonly ConnectionHelper Helps;
+    public readonly DocumentConnector Helps = new(databaseName, collectionName, proposedPath);
     public IDbConnector Connector => Helps.GetConnector;
-    public DocumentContext()
-    {
-        Helps = new ConnectionHelper(EnumDatabaseCategory.SQLServer, "DocumentDatabase");
-    }
-    public async Task<string> GetDocumentAsync(string databaseName, string collectionName)
+    public async Task<string> GetDocumentAsync()
     {
         DocumentTable? document = null;
         await Helps.DoWorkAsync(async cons =>
@@ -30,7 +26,7 @@ internal class DocumentContext
         }
         return document.JsonData;
     }
-    public async Task UpsertDocumentAsync(string databaseName, string collectionName, string content)
+    public async Task UpsertDocumentAsync(string content)
     {
         await Helps.DoWorkAsync(async cons =>
         {

@@ -1,19 +1,25 @@
 ﻿namespace DocumentDbLibrary;
 public abstract class ListDataAccess<T>
 {
-    public abstract string DatabaseName { get; }
-    public abstract string CollectionName { get; }
-    readonly DocumentContext _context;
-    public ListDataAccess()
+    private DocumentContext? _context;
+    public ListDataAccess(string databaseName, string collectionName)
     {
-        _context = new();
+        Init(databaseName, collectionName, "");
     }
-    protected async Task<BasicList<T>> GetDocumentsAsync()
+    public ListDataAccess(string databaseName, string collectionName, string path)
     {
-        string data = await _context.GetDocumentAsync(DatabaseName, CollectionName);
+        Init(databaseName, collectionName, path);
+    }
+    private void Init(string databaseName, string collectionName, string path)
+    {
+        _context = new(databaseName, collectionName, path);
+    }
+    public async Task<BasicList<T>> GetDocumentsAsync() //for now, just make public.  its only for testing until i figure out how i should make this work.
+    {
+        string data = await _context!.GetDocumentAsync();
         if (string.IsNullOrWhiteSpace(data))
         {
-            return new();
+            return [];
         }
         BasicList<T> output = await jj1.DeserializeObjectAsync<BasicList<T>>(data);
         return output;
@@ -21,6 +27,6 @@ public abstract class ListDataAccess<T>
     protected async Task UpsertRecordsAsync(BasicList<T> payLoad)
     {
         string content = await jj1.SerializeObjectAsync(payLoad);
-        await _context.UpsertDocumentAsync(DatabaseName, CollectionName, content);
+        await _context!.UpsertDocumentAsync(content);
     }
 }

@@ -5,12 +5,12 @@
 	  <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 	  <ImplicitUsings>true</ImplicitUsings>
-	  <Version>8.0.1</Version>
+	  <Version>8.0.2</Version>
   </PropertyGroup>
   
   <ItemGroup>
-	  <PackageReference Include="CommonBasicLibraries" Version="8.0.1" />
-	  <PackageReference Include="DapperHelpersLibrary" Version="8.0.1" />
+	  <PackageReference Include="CommonBasicLibraries" Version="8.0.5" />
+	  <PackageReference Include="DapperHelpersLibrary" Version="8.0.2" />
 	  
   </ItemGroup>
 
