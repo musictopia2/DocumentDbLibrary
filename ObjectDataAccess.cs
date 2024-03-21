@@ -25,7 +25,7 @@ public abstract class ObjectDataAccess<T>
         _text = data;
         return true;
     }
-    protected async Task<T> GetDocumentsAsync() //for now, just make public.  its only for testing until i figure out how i should make this work.
+    protected async Task<T> GetDocumentAsync() //for now, just make public.  its only for testing until i figure out how i should make this work.
     {
         if (_text is null)
         {
@@ -34,7 +34,7 @@ public abstract class ObjectDataAccess<T>
         T output = await jj1.DeserializeObjectAsync<T>(_text);
         return output;
     }
-    protected async Task UpsertRecordsAsync(T payLoad)
+    protected async Task UpsertRecordAsync(T payLoad)
     {
         string content = await jj1.SerializeObjectAsync(payLoad);
         await _context!.UpsertDocumentAsync(content);
