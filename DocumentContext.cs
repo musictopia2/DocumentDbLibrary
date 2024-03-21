@@ -24,7 +24,7 @@ internal class DocumentContext(string databaseName, string collectionName, strin
         {
             return "";
         }
-        return document.JsonData;
+        return document.Data;
     }
     public async Task UpsertDocumentAsync(string content)
     {
@@ -41,7 +41,7 @@ internal class DocumentContext(string databaseName, string collectionName, strin
             if (list.Count == 1)
             {
                 document = list.Single();
-                document.JsonData = content;
+                document.Data = content;
                 await cons.UpdateEntityAsync(document, EnumUpdateCategory.All);
             }
             else
@@ -49,7 +49,7 @@ internal class DocumentContext(string databaseName, string collectionName, strin
                 document = new();
                 document.DatabaseName = databaseName;
                 document.CollectionName = collectionName;
-                document.JsonData = content;
+                document.Data = content;
                 await cons.InsertSingleAsync(document, Helps.GetConnector);
             }
         });

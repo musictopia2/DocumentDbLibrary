@@ -14,7 +14,7 @@ public abstract class ListDataAccess<T>
     {
         _context = new(databaseName, collectionName, path);
     }
-    public async Task<BasicList<T>> GetDocumentsAsync() //for now, just make public.  its only for testing until i figure out how i should make this work.
+    protected async Task<BasicList<T>> GetDocumentsAsync() //for now, just make public.  its only for testing until i figure out how i should make this work.
     {
         string data = await _context!.GetDocumentAsync();
         if (string.IsNullOrWhiteSpace(data))
