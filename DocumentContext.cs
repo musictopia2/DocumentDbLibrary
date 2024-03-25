@@ -82,46 +82,24 @@ public class DocumentContext(string databaseName, string collectionName, string 
                 using IDbCommand command = Connector.GetCommand();
                 command.Connection = cons;
                 SetDatabaseParameters(command);
-                if (string.IsNullOrWhiteSpace(content) == false)
-                {
-                    DbParameter parameter;
-                    parameter = Connector.GetParameter();
-                    parameter.DbType = DbType.String;
-                    parameter.ParameterName = "Data";
-                    parameter.Value = content;
-                    command.Parameters.Add(parameter);
-                }
+                DbParameter parameter;
+                parameter = Connector.GetParameter();
+                parameter.DbType = DbType.String;
+                parameter.ParameterName = "Data";
+                parameter.Value = content;
+                command.Parameters.Add(parameter);
                 if (results.Count == 0)
                 {
                     //this means to add a new record.
-                    if (string.IsNullOrEmpty(content) == false)
-                    {
-                        command.CommandText = """
-                        insert into DocumentTable (DatabaseName, CollectionName, Data) values (@DatabaseName, @CollectionName, @Data)
-                        """;
-                    }
-                    else
-                    {
-                        command.CommandText = """
-                        insert into DocumentTable (DatabaseName, CollectionName, Data) values ('', @CollectionName, @Data)
-                        """;
-                    }
+                    command.CommandText = """
+                    insert into DocumentTable (DatabaseName, CollectionName, Data) values (@DatabaseName, @CollectionName, @Data)
+                    """;
                 }
                 else
                 {
-                    //since somehow parameters won't accept blank values.
-                    if (string.IsNullOrEmpty(content) == false)
-                    {
-                        command.CommandText = """
-                        update DocumentTable set Data = @Data where DatabaseName = @DatabaseName and CollectionName = @CollectionName
-                        """;
-                    }
-                    else
-                    {
-                        command.CommandText = """
-                        update DocumentTable set Data = '' where DatabaseName = @DatabaseName and CollectionName = @CollectionName
-                        """;
-                    }
+                    command.CommandText = """
+                    update DocumentTable set Data = @Data where DatabaseName = @DatabaseName and CollectionName = @CollectionName
+                    """;
                 }
                 command.ExecuteScalar(); //well see.
             });
