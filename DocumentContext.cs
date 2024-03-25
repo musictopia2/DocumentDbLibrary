@@ -1,57 +1,108 @@
 ﻿namespace DocumentDbLibrary;
-internal class DocumentContext(string databaseName, string collectionName, string proposedPath)
+//decided to make this public.  this way source generators can be used to hook into this as well.
+public class DocumentContext(string databaseName, string collectionName, string proposedPath)
 {
     public readonly DocumentConnector Helps = new(databaseName, collectionName, proposedPath);
     public IDbConnector Connector => Helps.GetConnector;
     public async Task<string> GetDocumentAsync()
     {
-        DocumentTable? document = null;
+        BasicList<string> results = [];
         await Helps.DoWorkAsync(async cons =>
         {
-            BasicList<ICondition> conditions = ss1.StartWithOneCondition(nameof(DocumentTable.DatabaseName), databaseName)
-            .AppendCondition(nameof(DocumentTable.CollectionName), collectionName);
-            var list = await cons.GetAsync<DocumentTable>(conditions, Helps.GetConnector);
-            if (list.Count > 1)
+            await Task.Run(() =>
             {
-                throw new CustomBasicException($"There cannot be more than one document with database {databaseName} and collection {collectionName}");
-            }
-            if (list.Count == 1)
-            {
-                document = list.Single();
-            }
+                using IDbCommand command = Connector.GetCommand();
+                command.Connection = cons;
+                command.CommandType = CommandType.Text;
+                command.CommandText = """
+                select a.Data from DocumentTable a where a.DatabaseName = @DatabaseName and a.CollectionName = @CollectionName
+                """;
+                SetDatabaseParameters(command);
+                DbDataReader? reader = command.ExecuteReader() as DbDataReader ?? throw new CustomBasicException("No reader found");
+                while (reader.Read())
+                {
+                    results.Add(reader.GetString("Data"));
+                }
+            });
         });
-        if (document is null)
+        if (results.Count > 1)
         {
-            return "";
+            throw new CustomBasicException($"There cannot be more than one document with database {databaseName} and collection {collectionName}");
         }
-        return document.Data;
+        if (results.Count == 0)
+        {
+            return ""; //because nothing.
+        }
+        return results.Single();
+    }
+    private void SetDatabaseParameters(IDbCommand command)
+    {
+        DbParameter parameter;
+        parameter = Connector.GetParameter();
+        parameter.DbType = DbType.String;
+        //i don't think there is size this time.
+        parameter.ParameterName = "@DatabaseName";
+        parameter.Value = databaseName;
+        command.Parameters.Add(parameter);
+        parameter = Connector.GetParameter();
+        parameter.DbType = DbType.String;
+        parameter.ParameterName = "@CollectionName";
+        parameter.Value = collectionName;
+        command.Parameters.Add(parameter);
+    }
+    private BasicList<int> GetResults(IDbConnection cons)
+    {
+        using IDbCommand command = Connector.GetCommand();
+        BasicList<int> results = [];
+        command.Connection = cons;
+        command.CommandType = CommandType.Text;
+        command.CommandText = """
+                select a.ID from DocumentTable a where a.DatabaseName = @DatabaseName and a.CollectionName = @CollectionName
+                """;
+        SetDatabaseParameters(command);
+        DbDataReader? reader = command.ExecuteReader() as DbDataReader ?? throw new CustomBasicException("No reader found");
+        while (reader.Read())
+        {
+            results.Add(reader.GetInt32("ID"));
+        }
+        return results;
     }
     public async Task UpsertDocumentAsync(string content)
     {
+        BasicList<int> results = [];
         await Helps.DoWorkAsync(async cons =>
         {
-            BasicList<ICondition> conditions = ss1.StartWithOneCondition(nameof(DocumentTable.DatabaseName), databaseName)
-            .AppendCondition(nameof(DocumentTable.CollectionName), collectionName);
-            var list = await cons.GetAsync<DocumentTable>(conditions, Helps.GetConnector);
-            if (list.Count > 1)
+            await Task.Run(() =>
             {
-                throw new CustomBasicException($"There was already more than one document with database {databaseName} and collection {collectionName}");
-            }
-            DocumentTable document;
-            if (list.Count == 1)
-            {
-                document = list.Single();
-                document.Data = content;
-                await cons.UpdateEntityAsync(document, EnumUpdateCategory.All);
-            }
-            else
-            {
-                document = new();
-                document.DatabaseName = databaseName;
-                document.CollectionName = collectionName;
-                document.Data = content;
-                await cons.InsertSingleAsync(document, Helps.GetConnector);
-            }
+                results = GetResults(cons);
+                if (results.Count > 1)
+                {
+                    throw new CustomBasicException($"There was already more than one document with database {databaseName} and collection {collectionName}");
+                }
+                using IDbCommand command = Connector.GetCommand();
+                command.Connection = cons;
+                SetDatabaseParameters(command);
+                DbParameter parameter;
+                parameter = Connector.GetParameter();
+                parameter.DbType = DbType.String;
+                parameter.ParameterName = "Data";
+                parameter.Value = content;
+                command.Parameters.Add(parameter);
+                if (results.Count == 0)
+                {
+                    //this means to add a new record.
+                    command.CommandText = """
+                    insert into DocumentTable (DatabaseName, CollectionName, Data) values (@DatabaseName, @CollectionName, @Data)
+                    """;
+                }
+                else
+                {
+                    command.CommandText = """
+                    update DocumentTable set Data = @Data where DatabaseName = @DatabaseName and CollectionName = @CollectionName
+                    """;
+                }
+                command.ExecuteScalar(); //well see.
+            });
         });
     }
 }
