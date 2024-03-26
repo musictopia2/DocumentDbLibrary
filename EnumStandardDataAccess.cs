@@ -1,5 +1,4 @@
 ﻿namespace DocumentDbLibrary;
-#if NET6_0_OR_GREATER
 public abstract class EnumStandardDataAccess<E> : BaseSimpleTypesDataAccess<E>
     where E : struct, Enum
 {
@@ -17,4 +16,3 @@ public abstract class EnumStandardDataAccess<E> : BaseSimpleTypesDataAccess<E>
         return output;
     }
 }
-#endif

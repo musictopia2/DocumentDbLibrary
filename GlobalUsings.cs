@@ -10,3 +10,4 @@ global using CommonBasicLibraries.DatabaseHelpers.EntityInterfaces;
 global using AdoNetHelpersLibrary.ConnectionHelpers;
 global using System.Data.Common;
 global using System.Data;
+global using CommonBasicLibraries.DatabaseHelpers.AbstractStaticInterfaces;
