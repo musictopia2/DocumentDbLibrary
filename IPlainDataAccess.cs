@@ -1,4 +1,4 @@
 ﻿namespace DocumentDbLibrary;
-public interface IPlainDataAccess<T> : ISqlDocumentConfiguration
+public interface IPlainDataAccess<T> : ISourceGeneratedDataAccess<T>
 {
 }
