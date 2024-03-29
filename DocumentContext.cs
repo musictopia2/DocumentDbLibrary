@@ -18,7 +18,7 @@ public class DocumentContext(string databaseName, string collectionName, string 
                 select a.Data from DocumentTable a where a.DatabaseName = @DatabaseName and a.CollectionName = @CollectionName
                 """;
                 SetDatabaseParameters(command);
-                DbDataReader? reader = command.ExecuteReader() as DbDataReader ?? throw new CustomBasicException("No reader found");
+                using DbDataReader? reader = command.ExecuteReader() as DbDataReader ?? throw new CustomBasicException("No reader found");
                 while (reader.Read())
                 {
                     results.Add(reader.GetString("Data"));
@@ -60,11 +60,12 @@ public class DocumentContext(string databaseName, string collectionName, string 
                 select a.ID from DocumentTable a where a.DatabaseName = @DatabaseName and a.CollectionName = @CollectionName
                 """;
         SetDatabaseParameters(command);
-        DbDataReader? reader = command.ExecuteReader() as DbDataReader ?? throw new CustomBasicException("No reader found");
+        using DbDataReader? reader = command.ExecuteReader() as DbDataReader ?? throw new CustomBasicException("No reader found");
         while (reader.Read())
         {
             results.Add(reader.GetInt32("ID"));
         }
+        reader.Close();
         return results;
     }
     public async Task UpsertDocumentAsync(string content)
