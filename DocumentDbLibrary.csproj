@@ -1,20 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-	  <TargetFrameworks>net8.0</TargetFrameworks>
-	  <LangVersion>latest</LangVersion>
+    <TargetFrameworks>net9.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-	  <ImplicitUsings>true</ImplicitUsings>
-	  <Version>8.0.11</Version>
+    <ImplicitUsings>true</ImplicitUsings>
+    <Version>9.0.1</Version>
   </PropertyGroup>
-  
   <ItemGroup>
-	  <PackageReference Include="AdoNetHelpersLibrary" Version="8.0.1" />
-	  <PackageReference Include="CommonBasicLibraries" Version="8.0.20" />
-	  
-	  
+    <PackageReference Include="AdoNetHelpersLibrary" Version="9.0.1" />
+    <PackageReference Include="CommonBasicLibraries" Version="9.0.1" />
   </ItemGroup>
-  
-  
-
 </Project>
