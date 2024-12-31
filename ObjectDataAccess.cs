@@ -39,4 +39,8 @@ public abstract class ObjectDataAccess<T>
         string content = await jj1.SerializeObjectAsync(payLoad);
         await _context!.UpsertDocumentAsync(content);
     }
+    protected async Task ClearObjectAsync()
+    {
+        await _context!.UpsertDocumentAsync(""); //this will clear out.  this means when you call objectexists, then will see there is nothing there now.
+    }
 }
