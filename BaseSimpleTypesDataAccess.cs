@@ -15,6 +15,11 @@ public abstract class BaseSimpleTypesDataAccess<T>
     {
         _context = new(databaseName, collectionName, path);
     }
+    protected async Task<bool> CanExportAsync()
+    {
+        string data = await _context!.GetDocumentAsync();
+        return string.IsNullOrWhiteSpace(data) == false;
+    }
     protected abstract T GetResults(string text);
     protected async Task<T> GetDataAsync() //for now, just make public.  its only for testing until i figure out how i should make this work.
     {
@@ -28,6 +33,15 @@ public abstract class BaseSimpleTypesDataAccess<T>
         return GetResults(data);
         //BasicList<T> output = await jj1.DeserializeObjectAsync<BasicList<T>>(data);
         //return output;
+    }
+    protected async Task ExportDocumentAsync(string path)
+    {
+        string data = await _context!.GetDocumentAsync();
+        if (string.IsNullOrWhiteSpace(data))
+        {
+            throw new CustomBasicException("No data was found.  Cannot export");
+        }
+        await ff1.WriteAllTextAsync(path, data);
     }
     protected async Task SaveDataAsync(T payLoad)
     {

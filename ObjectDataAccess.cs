@@ -15,6 +15,20 @@ public abstract class ObjectDataAccess<T>
     {
         _context = new(databaseName, collectionName, path);
     }
+    protected async Task<bool> CanExportAsync()
+    {
+        string data = await _context!.GetDocumentAsync();
+        return string.IsNullOrWhiteSpace(data) == false;
+    }
+    protected async Task ExportDocumentAsync(string path)
+    {
+        string data = await _context!.GetDocumentAsync();
+        if (string.IsNullOrWhiteSpace(data))
+        {
+            throw new CustomBasicException("No data was found.  Cannot export");
+        }
+        await ff1.WriteAllTextAsync(path, data);
+    }
     protected async Task<bool> ObjectExists()
     {
         string data = await _context!.GetDocumentAsync();
